@@ -30,7 +30,7 @@ public class Book {
 
     private ItemStack getLastPostBook(String post)
     {
-        Iterable<String> result = Splitter.fixedLength(255).split(post);
+        Iterable<String> result = Splitter.fixedLength(252).split(post);
         String[] pages = Iterables.toArray(result, String.class);
         ItemStack item = new ItemStack(Material.WRITTEN_BOOK, 1);
         net.minecraft.server.v1_12_R1.ItemStack nms = CraftItemStack.asNMSCopy(item);

@@ -3,3 +3,7 @@ version: '0.1'
 main: io.github.alexeymartynov.vkposts.main.VKPostsPlugin
 author: bybyzyanka
 website: https://vk.com/kai9595
+commands:
+  news:
+    usage: /news
+    description: VKPostsPlugin Commands

@@ -21,9 +21,8 @@ public final class VKPostsPlugin extends JavaPlugin implements Listener {
 
     private final TransportClient transportClient = new HttpTransportClient();
     private final VkApiClient vk = new VkApiClient(transportClient);
-    private final File file = new File(getDataFolder() + File.separator + "config.yml");
+    private final FileConfiguration config = getConfig();
 
-    private FileConfiguration config;
     private ServiceActor actor;
     private long lastPostDate;
 
@@ -36,18 +35,19 @@ public final class VKPostsPlugin extends JavaPlugin implements Listener {
     {
         instance = this;
 
-        Bukkit.getLogger().severe("************************************");
-        Bukkit.getLogger().severe("**** VKPostPlugin by bybyzyanka ****");
-        Bukkit.getLogger().severe("************************************");
+        System.out.println("************************************");
+        System.out.println("**** VKPostPlugin by bybyzyanka ****");
+        System.out.println("************************************");
 
         if(!connectVK())
         {
-            Bukkit.getLogger().severe("Type VK Service Actor Information to config.yml");
+            System.out.println("Type VK Service Actor Information to config.yml");
             Bukkit.getPluginManager().disablePlugin(getInstance());
             return;
         }
 
         Bukkit.getPluginManager().registerEvents(getInstance(), getInstance());
+        Bukkit.getPluginCommand("news").setExecutor(new NewsCommand());
         checkNewPosts();
     }
 
@@ -58,9 +58,7 @@ public final class VKPostsPlugin extends JavaPlugin implements Listener {
 
         this.lastPostDate = date;
         config.set("last_post_date", lastPostDate);
-
-        try { config.save(file); }
-        catch(Exception exception) {}
+        saveConfig();
 
         return true;
     }
@@ -70,22 +68,16 @@ public final class VKPostsPlugin extends JavaPlugin implements Listener {
         if(!getDataFolder().exists())
             getDataFolder().mkdir();
 
-        if(!file.exists())
-        {
-            saveResource("config.yml", false);
-            return false;
-        }
-
-        config = YamlConfiguration.loadConfiguration(file);
+        saveDefaultConfig();
         if(config.getLong("last_post_date") != 0)
             this.lastPostDate = config.getLong("last_post_date");
 
-        try
-        {
-            actor = new ServiceActor(config.getInt("vk_service_actor.app_id"),
-                config.getString("vk_service_actor.access_token"));
-        }
-        catch(Exception exception) { return false; }
+        int appId = config.getInt("vk_service_actor.app_id");
+        String token = config.getString("vk_service_actor.access_token");
+        if(token == null)
+            return false;
+
+        actor = new ServiceActor(appId, token);
 
         return true;
     }
