@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 public final class VKPostsPlugin extends JavaPlugin implements Listener {
 
@@ -35,13 +36,14 @@ public final class VKPostsPlugin extends JavaPlugin implements Listener {
     {
         instance = this;
 
-        System.out.println("************************************");
-        System.out.println("**** VKPostPlugin by bybyzyanka ****");
-        System.out.println("************************************");
+        Logger logger = Bukkit.getLogger();
+        logger.info("************************************");
+        logger.info("**** VKPostPlugin by bybyzyanka ****");
+        logger.info("************************************");
 
         if(!connectVK())
         {
-            System.out.println("Type VK Service Actor Information to config.yml");
+            logger.info("Type VK Service Actor Information to config.yml");
             Bukkit.getPluginManager().disablePlugin(getInstance());
             return;
         }
@@ -117,7 +119,10 @@ public final class VKPostsPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
-        if(!event.getPlayer().hasPlayedBefore())
-            openPost(event.getPlayer(), false);
+        Bukkit.getScheduler().runTaskAsynchronously(VKPostsPlugin.getInstance(), () ->
+        {
+            if(!event.getPlayer().hasPlayedBefore())
+                openPost(event.getPlayer(), false);
+        });
     }
 }

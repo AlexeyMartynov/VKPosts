@@ -1,5 +1,5 @@
 name: VKPosts
-version: '0.1'
+version: '0.3'
 main: io.github.alexeymartynov.vkposts.main.VKPostsPlugin
 author: bybyzyanka
 website: https://vk.com/kai9595
